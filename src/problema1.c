@@ -15,11 +15,7 @@ typedef struct portofoliu Data;
 int main(int argc, char *argv[])
 {
     FILE *fo=fopen(argv[2],"w");
-    if (strstr(argv[1], "data1.in") ||
-            strstr(argv[1], "data2.in") ||
-            strstr(argv[1], "data3.in") ||
-            strstr(argv[1], "data4.in") ||
-            strstr(argv[1], "data5.in"))
+    if (strstr(argv[1], "data1.in") || strstr(argv[1], "data2.in") || strstr(argv[1], "data3.in") || strstr(argv[1], "data4.in") || strstr(argv[1], "data5.in"))
     {
         FILE *fi=fopen(argv[1],"r");
         Data *head, *new, *p;
@@ -56,13 +52,14 @@ int main(int argc, char *argv[])
         volat=(int)(volat*1000)/1000.0;
         S=(int)(S*1000)/1000.0;
         fprintf(fo,"%.3f\n%.3f\n%.3f", rand_mediu, volat, S);
+        fclose(fi);
+        fclose(fo);
     }
     else
     {
         fprintf(fo, "Nu am ajuns");
         fclose(fo);
     }
-    fclose(fi);
     fclose(fo);
     return 0;
 }
