@@ -56,12 +56,13 @@ int main(int argc, char *argv[])
         volat=(int)(volat*1000)/1000.0;
         S=(int)(S*1000)/1000.0;
         fprintf(fo,"%.3f\n%.3f\n%.3f", rand_mediu, volat, S);
-        fclose(fi);
     }
     else
     {
         fprintf(fo, "Nu am ajuns");
         fclose(fo);
     }
+    fclose(fi);
+    fclose(fo);
     return 0;
 }
