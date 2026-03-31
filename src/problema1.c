@@ -1,16 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include "task1.h"
 #include <string.h>
-
-struct portofoliu
-{
-    double val;
-    double randament;
-    struct portofoliu *next;
-};
-
-typedef struct portofoliu Data;
 
 int main(int argc, char *argv[])
 {
@@ -38,16 +27,9 @@ int main(int argc, char *argv[])
             p=new;
         }
         rand_mediu=rand_mediu/(N-1);
-        for(p=head->next; p!=NULL ;)
-        {
-            volat+=(p->randament-rand_mediu)*(p->randament-rand_mediu);
-            new=p;
-            p=p->next;
-            free(new);
-        }
-        free(head);
-        volat=sqrt(volat/(N-1));
+        volat=volatilitate(head->next,rand_mediu,N);
         S=rand_mediu/volat;
+        StergereLista(&head);
         rand_mediu=(int)(rand_mediu*1000)/1000.0;
         volat=(int)(volat*1000)/1000.0;
         S=(int)(S*1000)/1000.0;
