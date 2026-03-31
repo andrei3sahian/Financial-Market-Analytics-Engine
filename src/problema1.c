@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         rand_mediu=(int)(rand_mediu*1000)/1000.0;
         volat=(int)(volat*1000)/1000.0;
         S=(int)(S*1000)/1000.0;
-        fprintf(fo,"%.3f\n%.3f\n%.3f", rand_mediu, volat, S);
+        fprintf(fo,"%.3f\n%.3f\n%.3f\n", rand_mediu, volat, S);
         fclose(fi);
         fclose(fo);
     }
