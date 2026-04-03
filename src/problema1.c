@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     }
     else if(strstr(argv[1], "data6.in") || strstr(argv[1], "data7.in") || strstr(argv[1], "data8.in") || strstr(argv[1], "data9.in") || strstr(argv[1], "data10.in"))
     {
-        FILE *fo=fopen(argv[2],"w");
         FILE *fi=fopen(argv[1],"r");
         Stiva *head1=NULL, *head2=NULL, *head3=NULL, *p1, *p2, *p3;
         char nume1[30], nume2[30], nume3[30];
@@ -51,7 +50,7 @@ int main(int argc, char *argv[])
         fgets(nume3,30,fi);
         creereStiva(&head3,fi);
         int i=1;
-        double rez=0.0;
+        double rez;
         p1=head1; p2=head2; p3=head3;
         while(p1!=NULL && p2!=NULL && p3!=NULL)
         {

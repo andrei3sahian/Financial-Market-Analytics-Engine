@@ -13,11 +13,9 @@ double volatilitate(Data *head, double rand_mediu, int N)
 
 void StergereLista(Data **head)
 {
-    Data *q;
-    while((*head)!=NULL)
-    {
-        q=(*head);
-        (*head)=(*head)->next;
-       free(q);
-    }
+    if((*head)==NULL)
+        return;
+    StergereLista(&((*head)->next));
+    free((*head));
+    (*head)=NULL;
 }
