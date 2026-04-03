@@ -1,4 +1,5 @@
 #include "task1.h"
+#include "task2.h"
 #include <string.h>
 
 int main(int argc, char *argv[])
@@ -34,6 +35,47 @@ int main(int argc, char *argv[])
         volat=(int)(volat*1000)/1000.0;
         S=(int)(S*1000)/1000.0;
         fprintf(fo,"%.3f\n%.3f\n%.3f\n", rand_mediu, volat, S);
+        fclose(fi);
+        fclose(fo);
+    }
+    else if(strstr(argv[1], "data6.in") || strstr(argv[1], "data7.in") || strstr(argv[1], "data8.in") || strstr(argv[1], "data9.in") || strstr(argv[1], "data10.in"))
+    {
+        FILE *fo=fopen(argv[2],"w");
+        FILE *fi=fopen(argv[1],"r");
+        Stiva *head1=NULL, *head2=NULL, *head3=NULL, *p1, *p2, *p3;
+        char nume1[30], nume2[30], nume3[30];
+        fscanf(fi,"%s",nume1);
+        creereStiva(&head1,fi);
+        fscanf(fi,"%s",nume2);
+        creereStiva(&head2,fi);
+        fscanf(fi,"%s",nume3);
+        creereStiva(&head3,fi);
+        int i=1;
+        double rez=0.0;
+        p1=head1; p2=head2; p3=head3;
+        while(p1!=NULL && p2!=NULL && p3!=NULL)
+        {
+            if(p1->valoare==p2->valoare && p3->valoare>p1->valoare)
+                {
+                    rez=Arbitraj(p1->valoare,p2->valoare,p3->valoare);
+                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume3);
+                }
+            if(p1->valoare==p3->valoare && p2->valoare>p1->valoare)
+                {
+                    rez=Arbitraj(p1->valoare,p3->valoare,p2->valoare);
+                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume2);
+                }
+            if(p2->valoare==p3->valoare && p1->valoare>p2->valoare)
+                {
+                    rez=Arbitraj(p1->valoare,p3->valoare,p2->valoare);
+                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume1);
+                }
+            p1=p1->next; p2=p2->next; p3=p3->next;
+            i++;
+        }
+        StergereStiva(&head1);
+        StergereStiva(&head2);
+        StergereStiva(&head3);
         fclose(fi);
         fclose(fo);
     }

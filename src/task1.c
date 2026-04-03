@@ -18,6 +18,6 @@ void StergereLista(Data **head)
     {
         q=(*head);
         (*head)=(*head)->next;
-        free(q);
+       free(q);
     }
 }
