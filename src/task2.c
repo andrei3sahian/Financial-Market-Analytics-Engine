@@ -3,9 +3,9 @@
 void creereStiva(Stiva **head, FILE *fi)
 {
     double nr;
-    Stiva *new;
-    while(fscanf(fi,"%lf",&nr)!=0)
+    while(fscanf(fi,"%lf",&nr)==1)
     {
+        nr=(int)(nr*1000)/1000.0;
         if((*head)==NULL)
         {
             (*head)=(Stiva*)malloc(sizeof(Stiva));
@@ -14,6 +14,7 @@ void creereStiva(Stiva **head, FILE *fi)
         }
         else
         {
+            Stiva *new;
             new=(Stiva*)malloc(sizeof(Stiva));
             new->valoare=nr;
             new->next=(*head);
@@ -22,7 +23,7 @@ void creereStiva(Stiva **head, FILE *fi)
     }
 }
 
-double Arbitraj(double a, double b, double c)
+double Arbitraj(double a, double c)
 {
     double rez=0.0;
     rez=c-a;

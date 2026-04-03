@@ -10,5 +10,5 @@ struct stiva_piata
 typedef struct stiva_piata Stiva;
 
 void creereStiva(Stiva **head, FILE *fi);
-double Arbitraj(double a, double b, double c);
+double Arbitraj(double a, double c);
 void StergereStiva(Stiva **head);

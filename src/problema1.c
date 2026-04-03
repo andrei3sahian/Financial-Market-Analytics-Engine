@@ -44,11 +44,11 @@ int main(int argc, char *argv[])
         FILE *fi=fopen(argv[1],"r");
         Stiva *head1=NULL, *head2=NULL, *head3=NULL, *p1, *p2, *p3;
         char nume1[30], nume2[30], nume3[30];
-        fscanf(fi,"%s",nume1);
+        fgets(nume1,30,fi);
         creereStiva(&head1,fi);
-        fscanf(fi,"%s",nume2);
+        fgets(nume2,30,fi);
         creereStiva(&head2,fi);
-        fscanf(fi,"%s",nume3);
+        fgets(nume3,30,fi);
         creereStiva(&head3,fi);
         int i=1;
         double rez=0.0;
@@ -57,18 +57,34 @@ int main(int argc, char *argv[])
         {
             if(p1->valoare==p2->valoare && p3->valoare>p1->valoare)
                 {
-                    rez=Arbitraj(p1->valoare,p2->valoare,p3->valoare);
-                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume3);
+                    rez=Arbitraj(p1->valoare,p3->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume3);
+                    
+                }
+                else if(p1->valoare==p2->valoare && p3->valoare<p1->valoare)
+                {
+                    rez=Arbitraj(p3->valoare,p1->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume3);
                 }
             if(p1->valoare==p3->valoare && p2->valoare>p1->valoare)
                 {
-                    rez=Arbitraj(p1->valoare,p3->valoare,p2->valoare);
-                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume2);
+                    rez=Arbitraj(p1->valoare,p2->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume2);
+                }
+                else if(p1->valoare==p3->valoare && p2->valoare<p1->valoare)
+                {
+                    rez=Arbitraj(p2->valoare,p1->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume2);
                 }
             if(p2->valoare==p3->valoare && p1->valoare>p2->valoare)
                 {
-                    rez=Arbitraj(p1->valoare,p3->valoare,p2->valoare);
-                    fprintf(fo,"ziua %d - %f - %s\n", i, rez, nume1);
+                    rez=Arbitraj(p2->valoare,p1->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume1);
+                }
+                else if(p2->valoare==p3->valoare && p1->valoare<p2->valoare)
+                {
+                    rez=Arbitraj(p1->valoare,p2->valoare);
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume1);
                 }
             p1=p1->next; p2=p2->next; p3=p3->next;
             i++;
