@@ -37,8 +37,8 @@ void StergereStiva(Stiva **head)
     q=(*head);
     while((*head)!=NULL)
     {
+        q=(*head);
         (*head)=(*head)->next;
         free(q);
-        q=(*head);
     }
 }

@@ -1,5 +1,6 @@
 #include "task1.h"
 #include "task2.h"
+#include "task3.h"
 #include <string.h>
 
 int main(int argc, char *argv[])
@@ -94,11 +95,23 @@ int main(int argc, char *argv[])
         fclose(fi);
         fclose(fo);
     }
+    else if(strstr(argv[1], "data11.in") || strstr(argv[1], "data12.in") || strstr(argv[1], "data13.in") || strstr(argv[1], "data14.in") || strstr(argv[1], "data15.in"))
+    {
+        FILE *fi=fopen(argv[1],"r");
+        arbore *head=(arbore*)malloc(sizeof(arbore));
+        list *cap=NULL, *q, *p;
+        int n=0, i=0, j, k=0, ok;
+        creere_lista(&cap,fi,&n);
+        head->stock=cap;
+        head->inaltime=0;
+        head->left=NULL;
+        head->right=NULL;
+        creere_arbore(head,n);
+    }
     else
     {
         fprintf(fo, "Nu am ajuns");
         fclose(fo);
     }
-    fclose(fo);
     return 0;
 }
