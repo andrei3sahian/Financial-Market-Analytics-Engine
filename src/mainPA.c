@@ -107,6 +107,27 @@ int main(int argc, char *argv[])
         head->left=NULL;
         head->right=NULL;
         creere_arbore(head,n);
+        p=head->stock;
+        q=head->stock->next;
+        for(i=0;i<9;i++)
+        {
+            for(j=i+1;j<10;j++)
+            {
+                ok=0;
+                parcurgere(p->nume,q->nume,head,head,&ok);
+                if(ok==1)
+                {
+                    fprintf(fo,"%s-%s", p->nume, q->nume);
+                }
+                q=q->next;
+            }
+            p=p->next;
+            q=p->next;
+        }
+        stergere_arbore(head);
+        head=NULL;
+        fclose(fi);
+        fclose(fo);
     }
     else
     {

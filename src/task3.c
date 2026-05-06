@@ -122,3 +122,61 @@ void creere_arbore(arbore *head, int n)
     creere_arbore(head->left, n-1);
     creere_arbore(head->right, n-1);
 }
+
+void stergere_arbore(arbore *node) 
+{
+    if (node == NULL) 
+    {
+        return;
+    }
+    stergere_arbore(node->left);
+    stergere_arbore(node->right);
+    if (node->stock != NULL) 
+    {
+        stergere_lista(node->stock);
+    }
+    free(node);
+}
+
+void stergere_lista(list *node)
+{
+    list *q=NULL;
+    while(node!=NULL)
+    {
+        q=node;
+        node=node->next;
+        free(q);
+    }
+}
+
+
+void parcurgere(char nume1[], char nume2[], arbore *stanga, arbore *dreapta, int *ok)
+{
+    if(stanga==NULL || (*ok)==1 || dreapta==NULL)
+        return ;
+    parcurgere(nume1,nume2,stanga->left,dreapta->right,&(*ok));
+    parcurgere(nume1,nume2,stanga->right,dreapta->left,&(*ok));
+    if(stanga->left==NULL && stanga->right==NULL)
+    {
+        list *p=stanga->stock;
+        while(p!=NULL)
+        {
+            if(strcmp(p->nume,nume1)==0)
+            {
+                list *q=dreapta->stock;
+                while(q!=NULL)
+                {
+                    if(strcmp(q->nume,nume2)==0)
+                    {
+                        (*ok)=1;
+                        break;
+                    }
+                    q=q->next;
+                }
+            }
+            if((*ok)==1)
+                break;
+            p=p->next;
+        }
+    }
+}

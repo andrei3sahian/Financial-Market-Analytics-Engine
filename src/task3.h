@@ -23,3 +23,6 @@ typedef struct arbore arbore;
 void creere_lista(list **cap, FILE *fi, int *n);
 void divizare_lista(list **caps, list **capd, list *head, int h, int n);
 void creere_arbore(arbore *head, int n);
+void stergere_arbore(arbore *node);
+void stergere_lista(list *node);
+void parcurgere(char nume1[], char nume2[], arbore *stanga, arbore *dreapta, int *ok);
