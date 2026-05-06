@@ -117,6 +117,9 @@ int main(int argc, char *argv[])
                 parcurgere(p->nume,q->nume,head,head,&ok);
                 if(ok==1)
                 {
+                    if(k==1)
+                        fprintf(fo,"\n");
+                    k=1;
                     fprintf(fo,"%s-%s", p->nume, q->nume);
                 }
                 q=q->next;
