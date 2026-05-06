@@ -33,12 +33,9 @@ double Arbitraj(double a, double c)
 
 void StergereStiva(Stiva **head)
 {
-    Stiva *q;
-    q=(*head);
-    while((*head)!=NULL)
-    {
-        q=(*head);
-        (*head)=(*head)->next;
-        free(q);
-    }
+    if((*head)==NULL)
+        return;
+    StergereStiva(&((*head)->next));
+    free((*head));
+    (*head)=NULL;
 }
