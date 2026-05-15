@@ -1,7 +1,7 @@
 #include "task1.h"
 #include "task2.h"
 #include "task3.h"
-#include <string.h>
+#include "task4.h"
 
 int main(int argc, char *argv[])
 {
@@ -134,7 +134,26 @@ int main(int argc, char *argv[])
     }
     else
     {
-        fprintf(fo, "Nu am ajuns");
+        FILE *fi=fopen(argv[1],"r");
+        graph *g=(graph*)malloc(sizeof(graph));
+        int N, K, i, nr_intervale, inceput=0, final=0;
+        double d, P_start, P_final;
+        fscanf(fi,"%d ", &N);
+        fscanf(fi,"%lf ", &d);
+        fscanf(fi,"%d ", &K);
+        fscanf(fi,"%lf ", &P_start);
+        fscanf(fi,"%lf ", &P_final);
+        nr_intervale=creere_mat_adiacenta(d,fi,N,g);
+        for(i=0;i<nr_intervale || (inceput==0 && final==0);i++)
+        {
+            if(P_start>g->nod[i]->inceput && P_start<g->nod[i]->final)
+                inceput=i;
+            if(P_final>g->nod[i]->inceput && P_final<g->nod[i]->final)
+                final=i;
+        }
+        probabilitati(g,K,inceput,final,fo,nr_intervale);
+
+        fclose(fi);
         fclose(fo);
     }
     return 0;
