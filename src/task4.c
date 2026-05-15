@@ -3,7 +3,7 @@
 int creere_mat_adiacenta(int d, FILE *fi, int N, graph *g)
 {
     double v[20], min, max;
-    int i, j, nr_intervale, indice1, indice2, con;
+    int i, j, nr_intervale;
     for(i=0;i<N;i++)
     {
         fscanf(fi,"%lf ",&v[i]);
@@ -36,13 +36,13 @@ int creere_mat_adiacenta(int d, FILE *fi, int N, graph *g)
     }
     for(i=0;i<N-1;i++)
     {
-        indice1=(int)((v[i]-(int)min)/d);
-        indice2=(int)((v[i+1]-(int)min)/d);
+        int indice1=(int)((v[i]-(int)min)/d);
+        int indice2=(int)((v[i+1]-(int)min)/d);
         g->a[indice1][indice2]++;      //de la i la j
     }
     for(i=0;i<nr_intervale;i++)
     {
-        con=0;
+        int con=0;
         for(j=0;j<nr_intervale;j++)
         {
             con+=g->a[i][j];
@@ -82,22 +82,23 @@ void pop(Queue **head)
     }
 }
 
-void afisare(Nodes *n, FILE *fo)
+void afisare(const Nodes *n, FILE *fo, int zi, int K)
 {
     if(n->prob.numarator==n->prob.numitor || n->prob.numitor==1)
-        fprintf(fo,"%d\n", n->prob.numarator);
+        fprintf(fo,"%d", n->prob.numarator);
     else
-        fprintf(fo,"%d/%d\n", n->prob.numarator, n->prob.numitor);
+        fprintf(fo,"%d/%d", n->prob.numarator, n->prob.numitor);
+    if(zi<K)
+        fprintf(fo,"\n");
 }
 
 int cmmdc(int a, int b)
 {
-    int r;
     if(a==0 || b==0)
         return 1;
     while(b!=0)
     {
-        r=a%b;
+        int r=a%b;
         a=b;
         b=r;
     }
@@ -113,18 +114,17 @@ int cmmmc(int a, int b)
 
 void calcul_fractii(Queue *head, graph *g, probabil v[], int (*n), int nr_intervale)
 {
-    int numarator_initial=0, numitor_initial=0, i, numarator_final=0, numitor_final=0;
     Queue *fiu=head;
     while(fiu!=NULL)
     {
-        numarator_final=0;
-        numitor_final=0;
-        for(i=0;i<nr_intervale;i++)
+        int numarator_final=0;
+        int numitor_final=0;
+        for(int i=0;i<nr_intervale;i++)
         {
             if(g->a[i][fiu->q]!=0 && g->nod[i]->nr_legaturi > 0 && g->nod[i]->prob.numarator > 0)
             {
-                numarator_initial=g->a[i][fiu->q]*g->nod[i]->prob.numarator;
-                numitor_initial=g->nod[i]->nr_legaturi*g->nod[i]->prob.numitor;
+                int numarator_initial=g->a[i][fiu->q]*g->nod[i]->prob.numarator;
+                int numitor_initial=g->nod[i]->nr_legaturi*g->nod[i]->prob.numitor;
                 if(numarator_final==0 && numitor_final==0)
                 {
                     numarator_final=numarator_initial;
@@ -139,13 +139,18 @@ void calcul_fractii(Queue *head, graph *g, probabil v[], int (*n), int nr_interv
                         numarator_final=numarator_final*(acelasi/numitor_final)+numarator_initial*(acelasi/numitor_initial);
                         numitor_final=acelasi;
                     }
+                    else
+                    {
+                        numarator_final+=numarator_initial;
+                    }
                 }
             }
         }
-        if(cmmdc(numitor_final,numarator_final)!=1)
+        int d = cmmdc(numitor_final, numarator_final);
+        if(d != 1)
         {
-            numitor_final=numitor_final/cmmdc(numitor_final,numarator_final);
-            numarator_final=numarator_final/cmmdc(numitor_final,numarator_final);
+            numitor_final  /= d;
+            numarator_final /= d;
         }
         v[(*n)].numarator=numarator_final;
         v[(*n)].numitor=numitor_final;
@@ -156,17 +161,17 @@ void calcul_fractii(Queue *head, graph *g, probabil v[], int (*n), int nr_interv
 
 void inactivare(Queue *head, graph *g, int nr_intervale)
 {
-    int v[20], n=0, i, j, ok;
+    int v[20], n=0;
     while(head!=NULL)
     {
         v[n]=head->q;
         n++;
         head=head->next;
     }
-    for(i=0;i<nr_intervale;i++)
+    for(int i=0;i<nr_intervale;i++)
     {
-        ok=0;
-        for(j=0;j<n;j++)
+        int ok=0;
+        for(int j=0;j<n;j++)
         {
             if(i==v[j])
                 ok=1;
@@ -179,113 +184,54 @@ void inactivare(Queue *head, graph *g, int nr_intervale)
     }
 }
 
-void probabilitati(graph *g, int K, int inceput, int final, FILE *fo, int nr_intervale) {
-    int zi, j, i;
-    g->nod[inceput]->prob.numarator = 1;
-    g->nod[inceput]->prob.numitor = 1;
-
-    // Afișăm probabilitatea pentru ziua 1
-    afisare(g->nod[final], fo);
-
-    // Calculăm pentru următoarele K-1 zile
-    for (zi = 2; zi <= K; zi++) {
-        // 1. Creăm o listă (Queue) cu nodurile care ar putea fi active AZI.
-        // Un nod j este activ dacă există un nod i (care a avut probabilitate ieri)
-        // care are legătură către j.
-        Queue *head_activ = NULL;
-        for (j = 0; j < nr_intervale; j++) {
-            int are_predecesor = 0;
-            for (i = 0; i < nr_intervale; i++) {
-                if (g->nod[i]->prob.numarator > 0 && g->a[i][j] > 0) {
-                    are_predecesor = 1;
+void probabilitati(graph *g, int K, int inceput, int final, FILE *fo, int nr_intervale) 
+{
+    int zi=1, j, i;
+    g->nod[inceput]->prob.numarator=1;
+    g->nod[inceput]->prob.numitor=1;
+    afisare(g->nod[final],fo,zi,K);
+    for(zi=2;zi<=K;zi++) 
+    {
+        Queue *head_activ=NULL;
+        for(j=0; j<nr_intervale;j++) 
+        {
+            int are_predecesor=0;
+            for(i=0;i<nr_intervale;i++) 
+            {
+                if(g->nod[i]->prob.numarator>0 && g->a[i][j]>0) 
+                {
+                    are_predecesor=1;
                     break;
                 }
             }
-            if (are_predecesor) {
-                // Adăugăm nodul j în coadă (fără duplicate, pentru că verificăm j-ul o singură dată)
-                push(&head_activ, j, 0, 1); 
-            }
+            if(are_predecesor!=0) 
+                push(&head_activ, j, 0, 1);
         }
-
-        // 2. Calculăm noile fracții pentru aceste noduri folosind funcția ta
-        // Folosim un vector temporar 'v' ca să nu suprascriem datele de "ieri" în timp ce calculăm
-        int n_v = 0;
-        int nr_noduri_coada = 0;
-        Queue *tmp = head_activ;
-        while(tmp) { nr_noduri_coada++; tmp = tmp->next; }
-        
-        probabil v[nr_noduri_coada];
-        calcul_fractii(head_activ, g, v, &n_v, nr_intervale);
-
-        // 3. Aplicăm inactivarea pentru nodurile care NU sunt în head_activ
-        inactivare(head_activ, g, nr_intervale);
-
-        // 4. Actualizăm nodurile care SUNT în head_activ cu noile valori calculate
-        tmp = head_activ;
-        for (i = 0; i < n_v; i++) {
-            g->nod[tmp->q]->prob.numarator = v[i].numarator;
-            g->nod[tmp->q]->prob.numitor = v[i].numitor;
-            tmp = tmp->next;
+        int n_v=0;
+        probabil v[40];
+        calcul_fractii(head_activ,g,v,&n_v,nr_intervale);
+        inactivare(head_activ,g,nr_intervale);
+        Queue *temp=head_activ;
+        for(i=0;i<n_v;i++) 
+        {
+            g->nod[temp->q]->prob.numarator=v[i].numarator;
+            g->nod[temp->q]->prob.numitor=v[i].numitor;
+            temp=temp->next;
         }
-
-        // 5. Afișăm probabilitatea nodului target pentru ziua curentă
-        afisare(g->nod[final], fo);
-
-        // 6. Curățăm coada pentru a o lua de la capăt în ziua următoare
-        while (head_activ != NULL) {
+        afisare(g->nod[final],fo,zi,K);
+        while (head_activ!= NULL)
             pop(&head_activ);
-        }
     }
 }
 
-/*
-void probabilitati(graph *g, int K, int inceput, int final, FILE *fo, int nr_intervale)
+void elibereaza_graf(graph *g, int nr_intervale) 
 {
-    Queue *head=(Queue*)malloc(sizeof(Queue));
-    head=NULL;
-    int contor=1, i, j, contor_activ;
-    for(i=1;i<=K;i++)
+    int i;
+    for(i=0;i<nr_intervale;i++) 
     {
-        if(i==1)
-        {
-            push(&head,inceput,g->nod[inceput]->prob.numarator,g->nod[inceput]->prob.numitor);
-            g->nod[inceput]->prob.numarator=1;
-            g->nod[inceput]->prob.numitor=1;
-            contor_activ=1;
-            afisare(g->nod[final],fo);
-        }
-        else
-        {
-            while(contor!=0)
-            {
-               for(j=0;j<nr_intervale;j++)
-                {
-                    if(g->a[head->q][j]!=0)
-                    {
-                        push(&head,j,g->nod[head->q]->prob.numarator,g->nod[head->q]->prob.numitor);
-                        contor_activ++;
-                    }
-                }
-                probabil v[contor_activ];
-                int n=0;
-                calcul_fractii(head,g,v,&n,nr_intervale);
-                Queue *temp=head;
-                for(i=0;i<n;i++)
-                {
-                    g->nod[temp->q]->prob.numitor=v[i].numitor;
-                    g->nod[temp->q]->prob.numarator=v[i].numarator;
-                    temp=temp->next;
-                }
-                while(contor_activ!=0)
-                {
-                    pop(&head);
-                    contor_activ--;
-                }
-                contor--;
-            }
-            afisare(g->nod[final],fo);
-        }
-        contor=contor_activ;
-        inactivare(head,g,nr_intervale);                       //funcite pentru a initializa toate nodurile inactive cu prob=0
+        free(g->a[i]);
+        free(g->nod[i]);
     }
-}*/
+    free(g->a);
+    free(g);
+}

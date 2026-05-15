@@ -144,15 +144,15 @@ int main(int argc, char *argv[])
         fscanf(fi,"%lf ", &P_start);
         fscanf(fi,"%lf ", &P_final);
         nr_intervale=creere_mat_adiacenta(d,fi,N,g);
-        for(i=0;i<nr_intervale || (inceput==0 && final==0);i++)
+        for(i=0;i<nr_intervale;i++)
         {
-            if(P_start>g->nod[i]->inceput && P_start<g->nod[i]->final)
+            if(P_start>=g->nod[i]->inceput && P_start<g->nod[i]->final)
                 inceput=i;
-            if(P_final>g->nod[i]->inceput && P_final<g->nod[i]->final)
+            if(P_final>=g->nod[i]->inceput && P_final<g->nod[i]->final)
                 final=i;
         }
         probabilitati(g,K,inceput,final,fo,nr_intervale);
-
+        elibereaza_graf(g,nr_intervale);
         fclose(fi);
         fclose(fo);
     }
