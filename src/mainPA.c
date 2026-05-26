@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
         double rand_mediu=0.0, volat=0.0, S=0.0;
         fscanf(fi,"%d",&N);
         head=(Data*)malloc(sizeof(Data));
-        head->next=NULL;
+        head->next=NULL;                            //creere head lista
         head->randament=0.0;
         fscanf(fi,"%lf",&head->val);
         p=head;
@@ -22,10 +22,10 @@ int main(int argc, char *argv[])
         {
             new=(Data*)malloc(sizeof(Data));
             p->next=new;
-            fscanf(fi,"%lf",&new->val);
+            fscanf(fi,"%lf",&new->val);             //creere lista si adaugare valori in lista
             new->next=NULL;
             new->randament=(new->val-p->val)/p->val;
-            rand_mediu+=new->randament;
+            rand_mediu+=new->randament;             //calculat randamentul pe fiecare celula si adaugare la randamentul mediu
             p=new;
         }
         rand_mediu=rand_mediu/(N-1);
@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
         S=rand_mediu/volat;
         StergereLista(&head);
         rand_mediu=(int)(rand_mediu*1000)/1000.0;
-        volat=(int)(volat*1000)/1000.0;
-        S=(int)(S*1000)/1000.0;
+        volat=(int)(volat*1000)/1000.0;                     //truncherea
+        S=(int)(S*1000)/1000.0;                                     
         fprintf(fo,"%.3f\n%.3f\n%.3f\n", rand_mediu, volat, S);
         fclose(fi);
         fclose(fo);
@@ -46,14 +46,14 @@ int main(int argc, char *argv[])
         char nume1[30], nume2[30], nume3[30];
         fgets(nume1,30,fi);
         creereStiva(&head1,fi);
-        fgets(nume2,30,fi);
+        fgets(nume2,30,fi);                        // creeaza cele 3 stive cu preturi si retine numele fiecarei piete
         creereStiva(&head2,fi);
         fgets(nume3,30,fi);
         creereStiva(&head3,fi);
         int i=1;
         double rez;
         p1=head1; p2=head2; p3=head3;
-        while(p1!=NULL && p2!=NULL && p3!=NULL)
+        while(p1!=NULL && p2!=NULL && p3!=NULL)             //pana cand o piata ramane fara preturi in stiva
         {
             if(p1->valoare==p2->valoare && p3->valoare>p1->valoare)
                 {
@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
                 else if(p1->valoare==p2->valoare && p3->valoare<p1->valoare)
                 {
                     rez=Arbitraj(p3->valoare,p1->valoare);
-                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume3);
-                }
+                    fprintf(fo,"ziua %d - %.2f - %s", i, rez, nume3);               //in functie de fiecare pret din ziua respectiva se 
+                }                                                                   //retine care este piata de cumparare si profitul care reiese din vanzare
             if(p1->valoare==p3->valoare && p2->valoare>p1->valoare)
                 {
                     rez=Arbitraj(p1->valoare,p2->valoare);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
         arbore *head=(arbore*)malloc(sizeof(arbore));
         list *cap=NULL, *q, *p;
         int n=0, i=0, j, k=0, ok;
-        creere_lista(&cap,fi,&n);
+        creere_lista(&cap,fi,&n);               //creeaza lista cu toate preturile si le retine in radacina arborelui
         head->stock=cap;
         head->inaltime=0;
         head->left=NULL;
@@ -109,20 +109,20 @@ int main(int argc, char *argv[])
         creere_arbore(head,n);
         p=head->stock;
         q=head->stock->next;
-        for(i=0;i<9;i++)
+        for(i=0;i<9;i++)                            //se parcurg doua cate doua numele actiunilor si se cauta in frunze oglindite
         {
             for(j=i+1;j<10;j++)
             {
                 ok=0;
-                parcurgere(p->nume,q->nume,head,head,&ok);
-                if(ok==1)
+                parcurgere(p->nume,q->nume,head,head,&ok);          //daca se gasesc cele doua nume oglindite se afiseaza
+                if(ok==1)                                               
                 {
                     if(k==1)
-                        fprintf(fo,"\n");
+                        fprintf(fo,"\n");                           //pentru a nu avea \n la final 
                     k=1;
                     fprintf(fo,"%s-%s", p->nume, q->nume);
                 }
-                q=q->next;
+                q=q->next;                                  //se parcurge restul vectorului pentru a gasi toate combinatiile posibile
             }
             p=p->next;
             q=p->next;
@@ -140,14 +140,14 @@ int main(int argc, char *argv[])
         double d, P_start, P_final;
         fscanf(fi,"%d ", &N);
         fscanf(fi,"%lf ", &d);
-        fscanf(fi,"%d ", &K);
-        fscanf(fi,"%lf ", &P_start);
+        fscanf(fi,"%d ", &K);                                               //se salveaza primele 5 numere ca valori principale legate de 
+        fscanf(fi,"%lf ", &P_start);                                        //zile, intervale, start si final
         fscanf(fi,"%lf ", &P_final);
-        nr_intervale=creere_mat_adiacenta(d,fi,N,g);
+        nr_intervale=creere_mat_adiacenta(d,fi,N,g);                        //se creeaza matricea de adiacenta si intervalele prin care se face variatia preturilor
         for(i=0;i<nr_intervale;i++)
         {
             if(P_start>=g->nod[i]->inceput && P_start<g->nod[i]->final)
-                inceput=i;
+                inceput=i;                                                  //se retin indicii in care se afla valoarea de start si de final
             if(P_final>=g->nod[i]->inceput && P_final<g->nod[i]->final)
                 final=i;
         }

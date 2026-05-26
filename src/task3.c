@@ -5,13 +5,13 @@ void creere_lista(list **cap, FILE *fi, int *n)
 {
     list *new, *temp=NULL;
     int i, j;
-    for(i=0;i<10;i++)
+    for(i=0;i<10;i++)           //se retin numele actiunilor
     {
         if((*cap)==NULL)
         {
             *cap=(list*)malloc(sizeof(list));
             fgets((*cap)->nume,5,fi);
-            fseek(fi,1,1);
+            fseek(fi,1,1);          //se trece peste virgula din fisierul de input
             (*cap)->next=NULL;
             temp=(*cap);
         }
@@ -20,7 +20,7 @@ void creere_lista(list **cap, FILE *fi, int *n)
             new=(list*)malloc(sizeof(list));
             fgets(new->nume,5,fi);
             if(i!=9)
-                fseek(fi,1,1);
+                fseek(fi,1,1);          //se trece peste \n de la final de rand
             new->next=NULL;
             temp->next=new;
             temp=new;
@@ -29,22 +29,22 @@ void creere_lista(list **cap, FILE *fi, int *n)
     i=1;
     j=0;
     temp=(*cap);
-    while(fscanf(fi,"%lf,", &temp->pret[j])==1)
+    while(fscanf(fi,"%lf,", &temp->pret[j])==1)         //se retin preturile pana cand se termina fisierul
     {
         if(i%10==0)
         {
             fseek(fi,1,1);
             j++;
-            i++;
+            i++;                    //se trece peste virgula dintre numere
             temp=(*cap);
         }
         else
         {
-            temp=temp->next;
+            temp=temp->next;        //se continua popularea listei cu numere
             i++;
         }
     }
-    (*n)=(i-1)/10;
+    (*n)=(i-1)/10;          //se calculeaza numarul de zile
 }
 
 void divizare_lista(list **caps, list **capd, list *head, int h, int n)
@@ -52,16 +52,15 @@ void divizare_lista(list **caps, list **capd, list *head, int h, int n)
     int j;
     list *prevs=NULL, *prevd=NULL, *new;
     for( ;head!=NULL;head=head->next)
-    {
-        if(head->pret[h]>head->pret[h+1])
-        {
-            printf("[NIVEL %d] %s: %.2f > %.2f -> STINGA\n", h, head->nume, head->pret[h], head->pret[h+1]);
+    {                                                               //functia divizeaza lista mare in doua liste mai mici
+        if(head->pret[h]>head->pret[h+1])                           //in functie de pret daca scade sau creste
+        {                                                           //se compara pretul de la ziua h cu ziua urmatoare
             if((*caps)==NULL)
             {
                 (*caps)=(list*)malloc(sizeof(list));
                 strcpy((*caps)->nume,head->nume);
                 for(j=0;j<n;j++)
-                    (*caps)->pret[j]=head->pret[j];
+                    (*caps)->pret[j]=head->pret[j];                 //se retine vectorul de preturi pentru fiecare actiune
                 (*caps)->next=NULL;
                 prevs=(*caps);
             }
@@ -106,8 +105,8 @@ void creere_arbore(arbore *head, int n)
     if(n<=1)
         return ;
     list *cap1=NULL, *cap2=NULL; 
-    divizare_lista(&cap1,&cap2,head->stock,head->inaltime,n+head->inaltime);
-    head->left=(arbore*)malloc(sizeof(arbore));
+    divizare_lista(&cap1,&cap2,head->stock,head->inaltime,n+head->inaltime);            //se da in functie numarul de zile ca n+inaltime
+    head->left=(arbore*)malloc(sizeof(arbore));                                         //si se da inaltimea si lista principala
     head->left->stock=cap1;
     head->left->inaltime=head->inaltime+1;
     head->left->left=NULL;
@@ -129,7 +128,7 @@ void stergere_arbore(arbore *node)
     {
         return;
     }
-    stergere_arbore(node->left);
+    stergere_arbore(node->left);            //stergere arbore recursiv postorder
     stergere_arbore(node->right);
     if (node->stock != NULL) 
     {
@@ -142,7 +141,7 @@ void stergere_lista(list *node)
 {
     list *q=NULL;
     while(node!=NULL)
-    {
+    {                               //se sterg listele de pe fiecare nod 
         q=node;
         node=node->next;
         free(q);
@@ -160,11 +159,11 @@ void parcurgere(char nume1[], char nume2[], arbore *stanga, arbore *dreapta, int
     {
         list *p=stanga->stock;
         while(p!=NULL)
-        {
-            if(strcmp(p->nume,nume1)==0)
+        {                                                                   //se parcurge recursiv arborele cu 2 pointeri(unul stanga si unul dreapta)
+            if(strcmp(p->nume,nume1)==0)                                    //daca gaseste primul nume intr-o lista din frunza
             {
                 list *q=dreapta->stock;
-                while(q!=NULL)
+                while(q!=NULL)                                              //il verifica pe al doilea daca se gaseste in oglinda si daca da se opreste functia
                 {
                     if(strcmp(q->nume,nume2)==0)
                     {
